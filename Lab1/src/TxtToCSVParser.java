@@ -3,16 +3,6 @@ import java.nio.file.Paths;
 import java.util.*;
 
 /**
- *  Class for comparisons of two tuples
- */
-class EntryComparator implements Comparator<Map.Entry<String, Integer>> {
-    @Override
-    public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
-        return o2.getValue().compareTo(o1.getValue());
-    }
-}
-
-/**
  * The class that parses the .txt to .csv only the input file is needed
  */
 public class TxtToCSVParser {
@@ -68,7 +58,7 @@ public class TxtToCSVParser {
      */
     private void writeToCSV() {
         List<Map.Entry<String, Integer>> list = new LinkedList<>(words.entrySet());
-        list.sort(new EntryComparator());
+        list.sort((o1, o2) -> o2.getValue() - o1.getValue());
         try(FileWriter fout = new FileWriter(Paths.get("output.csv").toFile(), false)){
 
             for (Map.Entry<String, Integer> next : list) {
