@@ -30,9 +30,6 @@ public class Main {
             TxtToCSVParser.getInstance(fin).parse();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (NullPointerException e) {
-            System.err.println("The file is empty!");
-            e.printStackTrace();
         }
     }
 }
