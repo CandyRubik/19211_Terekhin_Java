@@ -16,16 +16,34 @@ class EntryComparator implements Comparator<Map.Entry<String, Integer>> {
  * The class that parses the .txt to .csv only the input file is needed
  */
 public class TxtToCSVParser {
+    private static TxtToCSVParser instance = null;
     private final RandomAccessFile fin;
     private final Map<String, Integer> words;
 
-    public TxtToCSVParser(RandomAccessFile fin) {
+    private TxtToCSVParser(RandomAccessFile fin) {
         this.fin = fin;
         words = new HashMap<>();
     }
 
     /**
-     * The method takes a line from the file and parse it, then takes another line and so on until they run out
+     * This method creates an object if the object has not yet been created,
+     * and if it has already been created, it returns a pre-created object, thus implementing the Singleton pattern
+     * @param fin
+     * @return TxtToCSVParser
+     */
+    public static TxtToCSVParser getInstance(RandomAccessFile fin) {
+        if (instance == null) {
+            instance = new TxtToCSVParser(fin);
+        }
+        return instance;
+    }
+
+    /**
+     * The method takes a char from file and add it to string if it's digit or letter,
+     * then if met a separator add string in frequency container, after reading of whole file
+     * print words in
+     * @link ../output.csv
+     * by method writeToCSV
      */
     public void parse() throws IOException {
         StringBuilder string = new StringBuilder();
@@ -44,6 +62,10 @@ public class TxtToCSVParser {
         writeToCSV();
     }
 
+    /**
+     * The method prints words in descending order in
+     * @link ../output.csv
+     */
     private void writeToCSV() {
         List<Map.Entry<String, Integer>> list = new LinkedList<>(words.entrySet());
         list.sort(new EntryComparator());
