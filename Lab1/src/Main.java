@@ -18,16 +18,16 @@ public class Main {
         if (args.length != 1) { /* if there are not enough or many arguments,
                                                       then we ask you to enter the file name into the console */
             System.out.println("You run program with too many arguments or without arguments, please enter input_file_name.txt");
-            try (DataInputStream dis = new DataInputStream(System.in)) {
-                file = Paths.get(dis.readUTF());
+            try (DataInputStream dataInputStream = new DataInputStream(System.in)) {
+                file = Paths.get(dataInputStream.readUTF());
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
-            file = Paths.get(args[0]);
+            file = Paths.get(args[Constants.indexOfInputFileName]);
         }
-        try (RandomAccessFile fin = new RandomAccessFile(file.toFile(), "r")) {
-            TxtToCSVParser.getInstance(fin).parse();
+        try (RandomAccessFile inputFileStream = new RandomAccessFile(file.toFile(), "r")) {
+            TxtToCSVParser.getInstance(inputFileStream).parse();
         } catch (IOException e) {
             e.printStackTrace();
         }

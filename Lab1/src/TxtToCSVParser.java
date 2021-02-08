@@ -7,11 +7,11 @@ import java.util.*;
  */
 public class TxtToCSVParser {
     private static TxtToCSVParser instance = null;
-    private final RandomAccessFile fin;
+    private final RandomAccessFile fileInputStream;
     private final Map<String, Integer> words;
 
     private TxtToCSVParser(RandomAccessFile fin) {
-        this.fin = fin;
+        this.fileInputStream = fin;
         words = new HashMap<>();
     }
 
@@ -39,8 +39,8 @@ public class TxtToCSVParser {
         StringBuilder string = new StringBuilder();
         int c;
         do {
-            c = fin.read();
-            if(c != -1) {
+            c = fileInputStream.read();
+            if(c != Constants.endOfFileValue) {
                 if(Character.isLetterOrDigit((char)c)) {
                     string.append((char)c);
                 } else if (string.length() != 0) {
@@ -48,7 +48,7 @@ public class TxtToCSVParser {
                     string.delete(0, string.length());
                 }
             }
-        } while(c != -1);
+        } while(c != Constants.endOfFileValue);
         writeToCSV();
     }
 
@@ -59,12 +59,13 @@ public class TxtToCSVParser {
     private void writeToCSV() {
         List<Map.Entry<String, Integer>> list = new LinkedList<>(words.entrySet());
         list.sort((o1, o2) -> o2.getValue() - o1.getValue());
-        try(FileWriter fout = new FileWriter(Paths.get("output.csv").toFile(), false)){
+        try(FileWriter fileOutputStream = new FileWriter(Paths.get("output.csv").toFile(), false)){
 
             for (Map.Entry<String, Integer> next : list) {
-                String line = next.getKey() + ";" + next.getValue().toString() + ";" + (next.getValue() / (float) list.size() * 100) + "%";
-                fout.write(line + System.lineSeparator());
-                fout.flush();
+                String line = next.getKey() + Constants.delimerInCSVFile + next.getValue().toString()
+                        + Constants.delimerInCSVFile + (next.getValue() / (float) list.size() * 100) + Constants.percent;
+                fileOutputStream.write(line + System.lineSeparator());
+                fileOutputStream.flush();
             }
         } catch (IOException e) {
             System.err.println("You need to put the output.csv file back in place!");
